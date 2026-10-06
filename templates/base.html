@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TravelGo</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f6f8; margin: 0; }
+        nav { background: #1b3a57; color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
+        nav a { color: white; text-decoration: none; margin-left: 20px; }
+        .container { max-width: 900px; margin: 30px auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+        input, select, button { padding: 8px; margin: 6px 0; width: 100%; box-sizing: border-box; }
+        button { background: #1b3a57; color: white; border: none; border-radius: 4px; padding: 10px; cursor: pointer; }
+        button:hover { background: #142c44; }
+        .card { border: 1px solid #ddd; border-radius: 6px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .flash { background: #dff0d8; color: #3c763d; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
+        .status-confirmed { color: green; font-weight: bold; }
+        .status-cancelled { color: red; font-weight: bold; }
+        .tag { background: #eef3f7; padding: 3px 8px; border-radius: 10px; font-size: 12px; }
+    </style>
+</head>
+<body>
+<nav>
+    <strong>TravelGo</strong>
+    <div>
+        {% if session.get('user') %}
+            <a href="/dashboard">Dashboard</a>
+            <a href="/search?mode=bus">Search</a>
+            <a href="/logout">Logout ({{ session.get('name') }})</a>
+        {% else %}
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        {% endif %}
+    </div>
+</nav>
+<div class="container">
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for m in messages %}
+                <div class="flash">{{ m }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</div>
+</body>
+</html>

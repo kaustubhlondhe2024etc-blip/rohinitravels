@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Search Travel &amp; Hotels</h2>
+
+<form method="GET" style="display:flex; gap:10px; align-items:end;">
+    <div style="flex:1">
+        <label>Mode</label>
+        <select name="mode" onchange="this.form.submit()">
+            <option value="bus" {% if mode=='bus' %}selected{% endif %}>Bus</option>
+            <option value="train" {% if mode=='train' %}selected{% endif %}>Train</option>
+            <option value="flight" {% if mode=='flight' %}selected{% endif %}>Flight</option>
+            <option value="hotel" {% if mode=='hotel' %}selected{% endif %}>Hotel</option>
+        </select>
+    </div>
+    {% if mode == 'hotel' %}
+    <div style="flex:1">
+        <label>Hotel Type</label>
+        <select name="hotel_type" onchange="this.form.submit()">
+            <option value="">All</option>
+            <option value="luxury">Luxury</option>
+            <option value="budget">Budget</option>
+        </select>
+    </div>
+    {% endif %}
+</form>
+
+<h3 style="margin-top:25px;">Results</h3>
+{% for item in results %}
+<div class="card">
+    <div>
+        {% if mode == 'hotel' %}
+            <strong>{{ item.name }}</strong> <span class="tag">{{ item.type }}</span><br>
+            {{ item.city }} — Rs.{{ item.price }}/night
+        {% else %}
+            <strong>{{ item.operator }}</strong><br>
+            {{ item['from'] }} → {{ item.to }} — Rs.{{ item.price }}
+            {% if mode == 'bus' %} | Seats available: {{ item.seats }}{% endif %}
+        {% endif %}
+    </div>
+    <form method="POST" action="/book">
+        <input type="hidden" name="mode" value="{{ mode }}">
+        <input type="hidden" name="item_id" value="{{ item.id }}">
+        <input type="hidden" name="item_name" value="{{ item.name if mode=='hotel' else item.operator + ' (' + item['from'] + ' to ' + item.to + ')' }}">
+        <input type="hidden" name="price" value="{{ item.price }}">
+        {% if mode == 'bus' %}
+        <select name="seat" style="width:100px; display:inline-block;">
+            {% for s in range(1, item.seats+1) %}
+            <option value="Seat {{ s }}">Seat {{ s }}</option>
+            {% endfor %}
+        </select>
+        {% endif %}
+        <button type="submit" style="width:auto; padding:8px 16px;">Book</button>
+    </form>
+</div>
+{% else %}
+<p>No results found.</p>
+{% endfor %}
+{% endblock %}

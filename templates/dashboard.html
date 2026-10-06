@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Welcome, {{ name }}</h2>
+<p>Here are your bookings:</p>
+
+{% for b in bookings %}
+<div class="card">
+    <div>
+        <span class="tag">{{ b.mode | upper }}</span>
+        <strong>{{ b.item_name }}</strong><br>
+        Booking ID: {{ b.booking_id }} | Price: Rs.{{ b.price }}
+        {% if b.seat and b.seat != 'N/A' %} | {{ b.seat }}{% endif %}<br>
+        Booked on: {{ b.booked_on }} |
+        <span class="status-{{ b.status }}">{{ b.status | upper }}</span>
+    </div>
+    {% if b.status == 'confirmed' %}
+    <a href="/cancel/{{ b.booking_id }}"><button style="width:auto; background:#c0392b;">Cancel</button></a>
+    {% endif %}
+</div>
+{% else %}
+<p>No bookings yet. <a href="/search?mode=bus">Start searching</a>.</p>
+{% endfor %}
+{% endblock %}
